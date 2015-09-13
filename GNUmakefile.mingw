@@ -93,19 +93,21 @@ endif
 # Acquire configuration information for libraries that libs3 depends upon
 
 ifndef CURL_LIBS
-    CURL_LIBS := -Lc:\libs3-libs\bin -lcurl
+#CURL_LIBS := -Lc:\libs3-libs\bin -lcurl
+    CURL_LIBS := -Lc:\MinGW\lib -lcurldll
 endif
 
 ifndef CURL_CFLAGS
-    CURL_CFLAGS := -Ic:\libs3-libs\include
+#CURL_CFLAGS := -Ic:\libs3-libs\include
 endif
 
 ifndef LIBXML2_LIBS
-    LIBXML2_LIBS := -Lc:\libs3-libs\bin -lxml2
+#LIBXML2_LIBS := -Lc:\libs3-libs\bin -lxml2
+    LIBXML2_LIBS := -Lc:\MinGW\lib -lxml2.dll
 endif
 
 ifndef LIBXML2_CFLAGS
-    LIBXML2_CFLAGS := -Ic:\libs3-libs\include
+#LIBXML2_CFLAGS := -Ic:\libs3-libs\include
 endif
 
 
@@ -122,7 +124,8 @@ ifndef CFLAGS
     endif
 endif
 
-CFLAGS += -Wall -Werror -Wshadow -Wextra -Iinc \
+#CFLAGS += -Wall -Werror -Wshadow -Wextra -Iinc
+CFLAGS += -Wall -Wshadow -Wextra -Iinc \
           $(CURL_CFLAGS) $(LIBXML2_CFLAGS) \
           -DLIBS3_VER_MAJOR=\"$(LIBS3_VER_MAJOR)\" \
           -DLIBS3_VER_MINOR=\"$(LIBS3_VER_MINOR)\" \
@@ -130,9 +133,9 @@ CFLAGS += -Wall -Werror -Wshadow -Wextra -Iinc \
           -D__STRICT_ANSI__ \
           -D_ISOC99_SOURCE \
           -D_POSIX_C_SOURCE=200112L \
-          -Dsleep=Sleep -DSLEEP_UNITS_PER_SECOND=1000 \
           -DFOPEN_EXTRA_FLAGS=\"b\" \
           -Iinc/mingw -include windows.h
+#-Dsleep=Sleep -DSLEEP_UNITS_PER_SECOND=1000
 
 LDFLAGS = $(CURL_LIBS) $(LIBXML2_LIBS)
 
@@ -147,7 +150,7 @@ all: exported test
 # Exported targets are the library and driver program
 
 .PHONY: exported
-exported: libs3 s3 headers
+exported: libs3 s3 t3 headers
 
 
 # --------------------------------------------------------------------------
@@ -215,7 +218,7 @@ libs3: $(LIBS3_SHARED) $(BUILD)/lib/libs3.a
 LIBS3_SOURCES := src/acl.c src/bucket.c src/error_parser.c src/general.c \
                  src/object.c src/request.c src/request_context.c \
                  src/response_headers_handler.c src/service_access_logging.c \
-                 src/service.c src/simplexml.c src/util.c src/mingw_functions.c
+                 src/service.c src/simplexml.c src/util.c src/mingw_functions.c src/multipart.c src/strptime.c
 
 $(LIBS3_SHARED): $(LIBS3_SOURCES:src/%.c=$(BUILD)/obj/%.o)
 	$(QUIET_ECHO) $@: Building dynamic library
@@ -236,6 +239,16 @@ $(LIBS3_STATIC): $(LIBS3_SHARED)
 s3: $(BUILD)/bin/s3.exe
 
 $(BUILD)/bin/s3.exe: $(BUILD)/obj/s3.o $(BUILD)/obj/mingw_s3_functions.o \
+                     $(BUILD)/lib/libs3.a
+	$(QUIET_ECHO) $@: Building executable
+	- @ mkdir $(subst /,\,$(dir $@)) 2>&1 | echo >nul
+	$(VERBOSE_SHOW) gcc -o $@ $^ $(LDFLAGS) -lws2_32
+
+
+.PHONY: t3
+t3: $(BUILD)/bin/t3.exe
+
+$(BUILD)/bin/t3.exe: $(BUILD)/obj/t3.o $(BUILD)/obj/mingw_s3_functions.o \
                      $(BUILD)/lib/libs3.a
 	$(QUIET_ECHO) $@: Building executable
 	- @ mkdir $(subst /,\,$(dir $@)) 2>&1 | echo >nul
@@ -288,6 +301,6 @@ cleandeps:
 # --------------------------------------------------------------------------
 # Dependencies
 
-ALL_SOURCES := $(LIBS3_SOURCES) s3.c testsimplexml.c
+ALL_SOURCES := $(LIBS3_SOURCES) s3.c t3.c testsimplexml.c
 
 $(foreach i, $(ALL_SOURCES), $(eval -include $(BUILD)/dep/src/$(i:%.c=%.d)))
