@@ -9,7 +9,7 @@
 #include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
-#include "libs3.h"
+#include "libmss.h"
 
 // Some Windows stuff
 #ifndef FOPEN_EXTRA_FLAGS
@@ -314,7 +314,7 @@ static void put_object(const char *filename, const char *bucketName, const char 
   const char *cacheControl = 0, *contentType = 0, *md5 = 0;
   const char *contentDispositionFilename = 0, *contentEncoding = 0;
   int64_t expires = -1;
-  S3CannedAcl cannedAcl = S3CannedAclPrivate;
+  S3CannedAcl cannedAcl = S3CannedAclPublicRead;
   int metaPropertiesCount = 0;
   S3NameValue metaProperties[S3_MAX_METADATA_COUNT];
   char useServerSideEncryption = 0;
