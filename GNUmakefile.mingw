@@ -248,8 +248,7 @@ $(BUILD)/bin/s3.exe: $(BUILD)/obj/s3.o $(BUILD)/obj/mingw_s3_functions.o \
 .PHONY: sample
 sample: $(BUILD)/bin/sample.exe
 
-$(BUILD)/bin/sample.exe: $(BUILD)/obj/sample.o $(BUILD)/obj/mingw_s3_functions.o \
-                     $(BUILD)/lib/libs3.a
+$(BUILD)/bin/sample.exe: $(BUILD)/obj/sample.o $(BUILD)/lib/libs3.a
 	$(QUIET_ECHO) $@: Building executable
 	- @ mkdir $(subst /,\,$(dir $@)) 2>&1 | echo >nul
 	$(VERBOSE_SHOW) gcc -o $@ $^ $(LDFLAGS) -lws2_32
