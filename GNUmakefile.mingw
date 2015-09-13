@@ -150,7 +150,7 @@ all: exported test
 # Exported targets are the library and driver program
 
 .PHONY: exported
-exported: libs3 s3 t3 headers
+exported: libs3 s3 sample headers
 
 
 # --------------------------------------------------------------------------
@@ -245,10 +245,10 @@ $(BUILD)/bin/s3.exe: $(BUILD)/obj/s3.o $(BUILD)/obj/mingw_s3_functions.o \
 	$(VERBOSE_SHOW) gcc -o $@ $^ $(LDFLAGS) -lws2_32
 
 
-.PHONY: t3
-t3: $(BUILD)/bin/t3.exe
+.PHONY: sample
+sample: $(BUILD)/bin/sample.exe
 
-$(BUILD)/bin/t3.exe: $(BUILD)/obj/t3.o $(BUILD)/obj/mingw_s3_functions.o \
+$(BUILD)/bin/sample.exe: $(BUILD)/obj/sample.o $(BUILD)/obj/mingw_s3_functions.o \
                      $(BUILD)/lib/libs3.a
 	$(QUIET_ECHO) $@: Building executable
 	- @ mkdir $(subst /,\,$(dir $@)) 2>&1 | echo >nul
@@ -301,6 +301,6 @@ cleandeps:
 # --------------------------------------------------------------------------
 # Dependencies
 
-ALL_SOURCES := $(LIBS3_SOURCES) s3.c t3.c testsimplexml.c
+ALL_SOURCES := $(LIBS3_SOURCES) s3.c sample.c testsimplexml.c
 
 $(foreach i, $(ALL_SOURCES), $(eval -include $(BUILD)/dep/src/$(i:%.c=%.d)))

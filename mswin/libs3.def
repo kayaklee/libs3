@@ -26,7 +26,6 @@ S3_status_is_retryable
 S3_test_bucket
 S3_validate_bucket_name
 S3_initiate_multipart
-S3_upload_part
 S3_complete_multipart_upload
 S3_abort_multipart_upload
 S3_list_multipart_uploads
