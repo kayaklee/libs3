@@ -1,0 +1,13 @@
+EXPORTS
+S3_get_status_name
+S3_status_is_retryable
+S3_initialize
+S3_deinitialize
+S3_get_object
+S3_put_object
+S3_initiate_multipart
+S3_upload_part
+S3_complete_multipart_upload
+S3_abort_multipart_upload
+S3_list_multipart_uploads
+S3_list_parts
